@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- SAME STYLING AS BEFORE --- */
+        /* --- CSS STYLES (SAME AS BEFORE) --- */
         :root { --primary: #00CBA9; --dark: #333; --bg: #f4f6f8; --white: #fff; --mp3-bg: #f1c40f; --mp4-bg: #e67e22; --border: #e1e1e1; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--dark); padding-bottom: 50px; }
@@ -101,18 +101,6 @@
                 const thumbnail = data.thumbnail || "https://via.placeholder.com/400x250?text=Video+Preview";
                 const duration = data.duration ? `Duration: ${data.duration}` : '';
 
-                // SORTING LOGIC
-                const getQualityWeight = (q) => {
-                    if(!q) return 0;
-                    q = q.toLowerCase();
-                    if(q.includes('4k')) return 100;
-                    if(q.includes('1080')) return 80;
-                    if(q.includes('720')) return 70;
-                    if(q.includes('480')) return 60;
-                    if(q.includes('360')) return 50;
-                    return 10;
-                };
-
                 let audioItems = [];
                 let videoItems = [];
 
@@ -131,20 +119,15 @@
                             if(qual !== 'no_video') videoItems.push(item);
                         }
                     });
-                    videoItems.sort((a, b) => getQualityWeight(b.quality) - getQualityWeight(a.quality));
                 } else if (data.url) {
                     videoItems.push({ url: data.url, ext: 'mp4', cleanQuality: 'Standard', formattedSize: '' });
                 }
 
-                // --- SMART DOWNLOAD BUTTON ---
+                // --- NEW CLICK HANDLER ---
                 const createRow = (item, isAudio) => {
                     const badgeClass = isAudio ? 'badge-mp3' : 'badge-mp4';
                     const label = isAudio ? 'MP3' : 'MP4';
                     const size = item.formattedSize || '';
-                    
-                    // AGAR GOOGLE VIDEO HAI TO DIRECT LINK OPEN KAREIN (Avoid 403)
-                    // AGAR INSTA/TIKTOK HAI TO FORCE DOWNLOAD KAREIN
-                    let action = `smartDownload('${item.url}', this)`;
                     
                     return `
                     <div class="dl-item">
@@ -155,7 +138,7 @@
                                 <div class="size-text">${size}</div>
                             </div>
                         </div>
-                        <button class="dl-btn" onclick="${action}">
+                        <button class="dl-btn" onclick="openLink('${item.url}')">
                             <i class="fas fa-download"></i> Download
                         </button>
                     </div>`;
@@ -182,47 +165,22 @@
             }
         }
 
-        // --- NEW SMART DOWNLOAD LOGIC ---
-        function smartDownload(url, btn) {
-            // Check if it's a Google/YouTube link
-            if (url.includes("googlevideo.com") || url.includes("youtube")) {
-                // Google links ko New Tab me open karo (Direct Download often fails due to IP lock)
-                // Hum 'noreferrer' use kar rahe hain taaki Google ko pata na chale request kahan se aayi
-                window.open(url, '_blank', 'noreferrer');
-                
-                // User ko batao
-                btn.innerHTML = "<i class='fas fa-check'></i> Opening...";
-                setTimeout(() => btn.innerHTML = "<i class='fas fa-download'></i> Download", 2000);
-            } else {
-                // TikTok/Insta ke liye Direct Download (Blob method)
-                forceDownload(url, btn);
-            }
-        }
-
-        async function forceDownload(url, btn) {
-            const originalText = btn.innerHTML;
-            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Saving...";
-            
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("Network response was not ok");
-                const blob = await response.blob();
-                const blobUrl = window.URL.createObjectURL(blob);
+        // --- NEW OPEN LINK FUNCTION (NO-REFERRER) ---
+        function openLink(url) {
+            // Check if it's YouTube (Google Video)
+            if(url.includes("googlevideo.com")) {
+                // Method 1: Create hidden link with noreferrer
                 const a = document.createElement('a');
-                a.href = blobUrl;
-                a.download = "VidsSave_Video.mp4";
+                a.href = url;
+                a.target = '_blank';
+                a.rel = 'noreferrer noopener'; // Hide source to bypass some checks
                 document.body.appendChild(a);
                 a.click();
-                window.URL.revokeObjectURL(blobUrl);
-                a.remove();
-                btn.innerHTML = "<i class='fas fa-check'></i> Saved!";
-            } catch (error) {
-                // Fallback: Agar fail ho jaye to new tab me kholo
-                window.open(url, '_blank');
-                btn.innerHTML = "<i class='fas fa-external-link-alt'></i> Opened";
+                document.body.removeChild(a);
+            } else {
+                // Method 2: Force Download for TikTok/Insta
+                window.location.href = url;
             }
-            
-            setTimeout(() => btn.innerHTML = originalText, 3000);
         }
     </script>
 </body>
