@@ -3,48 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VidsSave.space - Free HD Video Downloader</title>
+    <title>VidsSave.space - HD Video & Audio Downloader</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- RESET & VARIABLES --- */
+        /* --- VARIABLES --- */
         :root {
-            --primary: #00CBA9; 
+            --primary: #00CBA9; /* Green Theme */
             --dark: #333;
-            --light-bg: #f3f6f9;
+            --bg: #f4f6f8;
             --white: #fff;
-            --mp3-color: #f1c40f; /* Yellow for Audio */
-            --mp4-color: #e67e22; /* Orange for Video */
-            --btn-border: #2ecc71; /* Green Border */
+            --mp3-bg: #f1c40f; /* Yellow for Audio */
+            --mp4-bg: #e67e22; /* Orange for Video */
+            --border: #e1e1e1;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background: var(--light-bg); color: var(--dark); }
+        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--dark); padding-bottom: 50px; }
 
         /* --- NAVBAR --- */
         nav {
             background: var(--white);
             padding: 15px 5%;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center;
+            text-align: center;
+            position: sticky; top: 0; z-index: 100;
         }
-        .logo { font-size: 22px; font-weight: 800; color: var(--dark); text-decoration: none; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--dark); text-decoration: none; }
         .logo span { color: var(--primary); }
 
-        /* --- HERO SECTION --- */
+        /* --- HERO & INPUT --- */
         .hero {
             background: var(--white);
-            padding: 40px 20px;
+            padding: 30px 20px;
             text-align: center;
             border-bottom: 1px solid #ddd;
         }
-        .hero h1 { font-size: 24px; margin-bottom: 10px; }
-        
         .search-box {
             max-width: 600px;
-            margin: 20px auto;
+            margin: 15px auto;
             position: relative;
             display: flex;
             border: 2px solid var(--primary);
@@ -57,159 +56,152 @@
         }
         .btn-go {
             background: var(--primary); color: white; border: none; padding: 0 25px;
-            font-weight: bold; cursor: pointer;
+            font-size: 18px; cursor: pointer;
         }
-        
         #loader { display: none; margin-top: 15px; color: var(--primary); font-weight: bold; }
 
-        /* --- RESULT LAYOUT (SCREENSHOT STYLE) --- */
+        /* --- RESULT CARD DESIGN --- */
         #result-area {
-            max-width: 900px;
-            margin: 30px auto;
+            max-width: 700px;
+            margin: 20px auto;
             padding: 0 15px;
         }
 
         .result-card {
             background: var(--white);
-            border-radius: 8px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-            display: flex; /* Side by Side layout */
-            flex-wrap: wrap; /* Mobile responsive */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             overflow: hidden;
-            border: 1px solid #e1e1e1;
+            border: 1px solid var(--border);
         }
 
-        /* LEFT SIDE: THUMBNAIL */
-        .card-left {
-            flex: 1;
-            min-width: 300px;
+        /* 1. TOP THUMBNAIL AREA */
+        .card-header {
             padding: 20px;
-            background: #000;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
         }
         .thumb-img {
             width: 100%;
-            max-width: 250px;
+            max-width: 400px;
             border-radius: 10px;
-            border: 2px solid #555;
-            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .video-title { font-size: 16px; line-height: 1.4; margin-bottom: 10px; font-weight: 500; }
-        .video-meta { color: #aaa; font-size: 13px; }
-
-        /* RIGHT SIDE: DOWNLOAD LIST */
-        .card-right {
-            flex: 1.5;
-            min-width: 300px;
-            padding: 0;
-            border-left: 1px solid #eee;
-        }
-
-        /* CATEGORY HEADERS */
-        .section-header {
-            padding: 12px 20px;
-            background: #f9f9f9;
-            font-weight: 700;
+        .video-title {
+            margin-top: 15px;
             font-size: 16px;
-            border-bottom: 1px solid #eee;
-            border-top: 1px solid #eee;
-            color: #444;
-            display: flex; align-items: center; gap: 8px;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #2c3e50;
         }
-        .section-header i { color: var(--btn-border); }
-        .section-header:first-child { border-top: none; }
+        .video-meta {
+            margin-top: 5px;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
 
-        /* LIST ITEMS */
+        /* 2. CATEGORY HEADERS (Music/Video) */
+        .category-header {
+            background: #f8f9fa;
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 15px;
+            color: #555;
+            display: flex; align-items: center; gap: 8px;
+            border-bottom: 1px solid var(--border);
+            border-top: 1px solid var(--border);
+        }
+        .category-header i { color: var(--primary); }
+        .category-header:first-child { border-top: none; }
+
+        /* 3. DOWNLOAD LIST ITEM */
         .dl-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            border-bottom: 1px solid #eee;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f1f1;
+            transition: background 0.2s;
         }
+        .dl-item:hover { background: #fafafa; }
         .dl-item:last-child { border-bottom: none; }
 
-        /* TAGS (MP3/MP4) */
-        .tag {
-            padding: 3px 6px;
-            border-radius: 3px;
+        /* Left Side: Quality Badge & Size */
+        .dl-info { display: flex; align-items: center; gap: 12px; }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
             color: white;
-            font-weight: bold;
-            font-size: 12px;
-            margin-right: 8px;
-        }
-        .tag-mp3 { background: var(--mp3-color); }
-        .tag-mp4 { background: var(--mp4-color); }
-
-        .info-text { font-weight: 600; font-size: 14px; color: #555; }
-        .size-text { font-size: 13px; color: #888; margin-left: 10px; font-weight: 400; }
-
-        /* BUTTON STYLE (Green Outline) */
-        .download-btn {
-            background: white;
-            color: var(--btn-border);
-            border: 2px solid var(--btn-border);
-            padding: 6px 15px;
-            border-radius: 5px;
             font-weight: 700;
-            font-size: 14px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.2s;
-            cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
+            min-width: 50px;
+            text-align: center;
         }
-        .download-btn:hover {
-            background: var(--btn-border);
+        .badge-mp3 { background: var(--mp3-bg); } /* Yellow */
+        .badge-mp4 { background: var(--mp4-bg); } /* Orange */
+
+        .quality-text {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        .size-text {
+            font-size: 13px;
+            color: #999;
+            font-weight: 400;
+        }
+
+        /* Right Side: Button */
+        .dl-btn {
+            text-decoration: none;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+            padding: 6px 18px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex; align-items: center; gap: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .dl-btn:hover {
+            background: var(--primary);
             color: white;
         }
-        .downloading .fa-download { display: none; }
-        .downloading .fa-spinner { display: inline-block; }
+        
+        .downloading { opacity: 0.7; pointer-events: none; }
+        .downloading i.fa-download { display: none; }
+        .downloading i.fa-spinner { display: inline-block; }
 
-        /* ERROR */
-        .error-msg { 
-            background: #ffeaa7; color: #d35400; 
-            padding: 10px; margin: 20px auto; 
-            max-width: 600px; border-radius: 5px; text-align: center;
-        }
+        .error-msg { background: #fff3cd; color: #856404; padding: 15px; text-align: center; border-radius: 8px; margin-top: 20px; }
 
-        /* Footer */
-        footer { text-align: center; padding: 30px; color: #999; font-size: 12px; }
-
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            .result-card { flex-direction: column; }
-            .card-left { border-bottom: 5px solid var(--primary); }
-            .card-right { border-left: none; }
-            .dl-item { padding: 10px 15px; }
-            .info-text { font-size: 13px; }
+        @media (max-width: 480px) {
+            .dl-item { padding: 12px 15px; }
+            .badge { font-size: 11px; padding: 3px 6px; }
+            .quality-text { font-size: 13px; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="#" class="logo"><i class="fas fa-play-circle" style="color:var(--primary);"></i> Vids<span>Save.space</span></a>
+        <a href="#" class="logo"><i class="fas fa-bolt" style="color:var(--primary);"></i> Vids<span>Save</span></a>
     </nav>
 
     <section class="hero">
         <h1>Video Downloader</h1>
         <div class="search-box">
-            <input type="text" id="urlInput" placeholder="Paste link here..." oninput="handlePaste()">
+            <input type="text" id="urlInput" placeholder="Paste link (YouTube, Insta, FB)..." oninput="handlePaste()">
             <button class="btn-go" onclick="fetchVideo()"><i class="fas fa-arrow-right"></i></button>
         </div>
-        <div id="loader"><i class="fas fa-circle-notch fa-spin"></i> Processing...</div>
+        <div id="loader"><i class="fas fa-spinner fa-spin"></i> Finding Links...</div>
     </section>
 
     <div id="result-area"></div>
-
-    <footer>&copy; 2026 VidsSave.space</footer>
 
     <script>
         let debounceTimer;
@@ -248,96 +240,120 @@
 
                 if (!data || (!data.medias && !data.url)) throw new Error("No video found");
 
-                const title = data.title || "Downloaded Video";
-                const thumbnail = data.thumbnail || "https://via.placeholder.com/300x200?text=No+Preview";
+                const title = data.title || "VidsSave Download";
+                const thumbnail = data.thumbnail || "https://via.placeholder.com/400x250?text=Video+Preview";
                 const duration = data.duration ? `Duration: ${data.duration}` : '';
 
-                // --- SEPARATE AUDIO & VIDEO LISTS ---
-                let audioHTML = '';
-                let videoHTML = '';
+                // --- SORTING LOGIC (High to Low) ---
+                // Helper to give weight to quality for sorting
+                const getQualityWeight = (q) => {
+                    if(!q) return 0;
+                    q = q.toLowerCase();
+                    if(q.includes('4k')) return 100;
+                    if(q.includes('2k') || q.includes('1440')) return 90;
+                    if(q.includes('1080')) return 80;
+                    if(q.includes('720')) return 70;
+                    if(q.includes('480')) return 60;
+                    if(q.includes('360')) return 50;
+                    if(q.includes('240')) return 40;
+                    if(q.includes('144')) return 30;
+                    return 10;
+                };
 
-                // Helper to create Row
-                const createRow = (quality, size, ext, url, typeClass) => {
-                    const cleanTitle = title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 20);
-                    const filename = `VidsSave_${cleanTitle}.${ext}`;
+                // Prepare Lists
+                let audioItems = [];
+                let videoItems = [];
+
+                if (data.medias && data.medias.length > 0) {
+                    data.medias.forEach(media => {
+                        let ext = media.extension || 'mp4';
+                        let qual = media.quality || 'HD';
+                        
+                        // Clean Quality Label (Make it look like 720P, 128KBPS)
+                        if(qual === 'render_1080p') qual = '1080P';
+                        if(!isNaN(qual)) qual = qual + 'P'; // If just number, add P
+                        
+                        let item = { ...media, cleanQuality: qual.toUpperCase(), ext: ext };
+
+                        if (ext === 'mp3' || ext === 'm4a') {
+                            audioItems.push(item);
+                        } else {
+                            if(qual !== 'no_video') videoItems.push(item);
+                        }
+                    });
+
+                    // SORT VIDEO: High Resolution First
+                    videoItems.sort((a, b) => getQualityWeight(b.quality) - getQualityWeight(a.quality));
+                } else if (data.url) {
+                    videoItems.push({ url: data.url, ext: 'mp4', cleanQuality: 'Standard', formattedSize: '' });
+                }
+
+                // --- GENERATE HTML ---
+                const createRow = (item, isAudio) => {
+                    const badgeClass = isAudio ? 'badge-mp3' : 'badge-mp4';
+                    const label = isAudio ? 'MP3' : 'MP4';
+                    const size = item.formattedSize || '';
                     
+                    // Clean Title for Filename
+                    const safeTitle = title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 25);
+                    const filename = `VidsSave_${safeTitle}.${item.ext}`;
+
                     return `
                     <div class="dl-item">
-                        <div>
-                            <span class="tag ${typeClass}">${ext.toUpperCase()}</span>
-                            <span class="info-text">${quality}</span>
-                            <span class="size-text">${size}</span>
+                        <div class="dl-info">
+                            <span class="badge ${badgeClass}">${label}</span>
+                            <div>
+                                <div class="quality-text">${item.cleanQuality}</div>
+                                <div class="size-text">${size}</div>
+                            </div>
                         </div>
-                        <button class="download-btn" onclick="forceDownload('${url}', '${filename}', this)">
+                        <button class="dl-btn" onclick="forceDownload('${item.url}', '${filename}', this)">
                             <i class="fas fa-download"></i> Download
                             <i class="fas fa-spinner fa-spin" style="display:none;"></i>
                         </button>
                     </div>`;
                 };
 
-                // Logic to filter API Data
-                if (data.medias && data.medias.length > 0) {
-                    data.medias.forEach(media => {
-                        let q = media.quality || 'Standard';
-                        let s = media.formattedSize || '';
-                        let u = media.url;
-                        let e = media.extension || 'mp4';
+                let audioHTML = audioItems.map(item => createRow(item, true)).join('');
+                let videoHTML = videoItems.map(item => createRow(item, false)).join('');
 
-                        if (media.audioAvailable === false && e === 'mp4') return; // Skip mute videos if needed
-
-                        if (e === 'mp3' || e === 'm4a') {
-                            audioHTML += createRow(q, s, e, u, 'tag-mp3');
-                        } else {
-                            // Video
-                            if(q === 'no_video') return;
-                            videoHTML += createRow(q, s, e, u, 'tag-mp4');
-                        }
-                    });
-                } else if (data.url) {
-                    // Fallback Single Video
-                    videoHTML += createRow('Standard', '', 'mp4', data.url, 'tag-mp4');
-                }
-
-                // --- RENDER FINAL CARD ---
+                // --- FINAL RENDER ---
                 resultArea.innerHTML = `
                     <div class="result-card">
-                        <div class="card-left">
+                        <div class="card-header">
                             <img src="${thumbnail}" class="thumb-img">
                             <div class="video-title">${title}</div>
                             <div class="video-meta">${duration}</div>
                         </div>
 
-                        <div class="card-right">
-                            ${audioHTML ? `
-                                <div class="section-header">
-                                    <i class="fas fa-music"></i> Music
-                                </div>
-                                ${audioHTML}
-                            ` : ''}
+                        ${audioHTML ? `
+                            <div class="category-header">
+                                <i class="fas fa-music"></i> Music
+                            </div>
+                            <div class="dl-list">${audioHTML}</div>
+                        ` : ''}
 
-                            ${videoHTML ? `
-                                <div class="section-header">
-                                    <i class="fas fa-video"></i> Video
-                                </div>
-                                ${videoHTML}
-                            ` : ''}
-                            
-                            ${!audioHTML && !videoHTML ? '<div style="padding:20px;text-align:center;">No direct links found. Try another video.</div>' : ''}
-                        </div>
+                        ${videoHTML ? `
+                            <div class="category-header">
+                                <i class="fas fa-video"></i> Video
+                            </div>
+                            <div class="dl-list">${videoHTML}</div>
+                        ` : ''}
+
+                        ${!audioHTML && !videoHTML ? '<div style="padding:20px;text-align:center;">No direct links found.</div>' : ''}
                     </div>
                 `;
 
             } catch (error) {
                 loader.style.display = 'none';
-                resultArea.innerHTML = `<div class="error-msg">❌ Video link not valid or Private.</div>`;
+                resultArea.innerHTML = `<div class="error-msg">Video not found or Private link.</div>`;
             }
         }
 
         async function forceDownload(url, filename, btn) {
+            btn.classList.add('downloading');
             const icon = btn.querySelector('.fa-download');
             const spinner = btn.querySelector('.fa-spinner');
-            
-            btn.classList.add('downloading');
             if(icon) icon.style.display = 'none';
             if(spinner) spinner.style.display = 'inline-block';
 
