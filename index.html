@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidsSave.space - Free HD Video Downloader</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #00CBA9; /* VidsSave Green */
+            --secondary: #00a88d;
+            --dark: #2d3436;
+            --light: #f9fbfd;
+            --white: #ffffff;
+            --gray: #636e72;
+            --border: #dfe6e9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* --- NAVBAR --- */
+        nav {
+            background: var(--white);
+            padding: 15px 5%;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* BRANDING UPDATE: .space ko highlight kiya */
+        .logo span { color: var(--primary); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(180deg, #e3fdf8 0%, #ffffff 100%);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 10px; color: var(--dark); }
+        .hero p { color: var(--gray); margin-bottom: 30px; font-size: 1.1rem; }
+
+        /* Input Box */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .input-wrapper {
+            display: flex;
+            background: var(--white);
+            border: 2px solid var(--primary);
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 203, 169, 0.15);
+        }
+        input {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+        .btn-go {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0 30px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-go:hover { background: var(--secondary); }
+
+        /* --- RESULT SECTION (Professional Card) --- */
+        #result-area {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+        
+        /* Video Details Card */
+        .video-card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            animation: slideUp 0.5s ease;
+        }
+        
+        .video-header {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .thumb-img {
+            width: 120px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #eee;
+        }
+        .video-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .video-info p { font-size: 13px; color: var(--gray); }
+
+        /* Categories (Tabs) */
+        .download-tabs {
+            display: flex;
+            background: #f1f2f6;
+            padding: 10px 20px;
+            gap: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray);
+        }
+        .tab-active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+        /* Download List */
+        .download-list { padding: 0; }
+        .download-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f1f1;
+            transition: 0.2s;
+        }
+        .download-item:last-child { border-bottom: none; }
+        .download-item:hover { background: #f9f9f9; }
+
+        .format-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge {
+            background: #ff7675;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge.mp4 { background: #00b894; } /* Green for Video */
+        .badge.mp3 { background: #0984e3; } /* Blue for Audio */
+        
+        .quality-text { font-weight: 500; color: var(--dark); font-size: 14px; }
+        .size-text { font-size: 12px; color: var(--gray); margin-left: 5px; }
+
+        .dl-btn {
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+        .dl-btn:hover { background: var(--secondary); }
+
+        /* --- LOADER & MESSAGES --- */
+        #loader { display: none; margin-top: 20px; color: var(--primary); font-weight: 600; }
+        .error-msg { 
+            background: #ffeaa7; 
+            color: #d35400; 
+            padding: 10px; 
+            border-radius: 8px; 
+            margin-top: 20px; 
+            font-size: 14px;
+        }
+
+        /* --- FEATURES --- */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+        .feat-box i { font-size: 30px; color: var(--primary); margin-bottom: 10px; }
+        .feat-box h4 { font-size: 16px; margin-bottom: 5px; }
+        .feat-box p { font-size: 12px; color: var(--gray); }
+
+        /* Footer small */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 12px;
+            background: var(--light);
+            margin-top: 40px;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.8rem; }
+            .thumb-img { width: 80px; height: 60px; }
+            .download-item { padding: 12px 15px; }
+            .dl-btn span { display: none; } /* Text hide on small mobile */
+            .dl-btn { padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">
+            <i class="fas fa-play-circle" style="color:var(--primary);"></i> 
+            VidsSave<span>.space</span>
+        </a>
+    </nav>
+
+    <section class="hero">
+        <h1>VidsSave.space</h1>
+        <p>Free Online Video Downloader - YouTube, Instagram, TikTok & FB</p>
+
+        <div class="search-container">
+            <div class="input-wrapper">
+                <input type="text" id="urlInput" placeholder="Paste link here (e.g., YouTube)...">
+                <button class="btn-go" onclick="fetchVideo()">Start <i class="fas fa-arrow-right"></i></button>
+            </div>
+            
+            <div id="loader">
+                <i class="fas fa-circle-notch fa-spin"></i> Analyzing Video...
+            </div>
+        </div>
+    </section>
+
+    <div id="result-area"></div>
+
+    <section class="features">
+        <div class="feat-box">
+            <i class="fas fa-bolt"></i>
+            <h4>Fast</h4>
+            <p>Instant Download</p>
+        </div>
+        <div class="feat-box">
+            <i class="fas fa-shield-alt"></i>
+            <h4>Secure</h4>
+            <p>No Virus / Ads</p>
+        </div>
+        <div class="feat-box">
+            <i class="fas fa-check-circle"></i>
+            <h4>Free</h4>
+            <p>Unlimited Uses</p>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 VidsSave.space - All Rights Reserved.
+    </footer>
+
+    <script>
+        async function fetchVideo() {
+            const urlInput = document.getElementById('urlInput');
+            const resultArea = document.getElementById('result-area');
+            const loader = document.getElementById('loader');
+            const url = urlInput.value.trim();
+
+            if (!url) {
+                alert("Please paste a link first!");
+                return;
+            }
+
+            // Reset UI
+            loader.style.display = 'block';
+            resultArea.innerHTML = '';
+
+            // API Details
+            const apiKey = 'fa714c86ccmsh14d7483011d8231p1fae75jsnaaba55ce7db8'; 
+            const apiHost = 'social-download-all-in-one.p.rapidapi.com';
+            const endpoint = 'https://social-download-all-in-one.p.rapidapi.com/v1/social/autolink';
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-RapidAPI-Key': apiKey,
+                        'X-RapidAPI-Host': apiHost
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+                console.log(data); // For Debugging
+
+                loader.style.display = 'none';
+
+                if (!data || (!data.medias && !data.url)) {
+                    throw new Error("No video found");
+                }
+
+                // DATA EXTRACTION
+                let title = data.title || "Video Download";
+                let thumbnail = data.thumbnail || "https://via.placeholder.com/150";
+                
+                // HTML Generate karna
+                let downloadListHTML = '';
+
+                // Agar 'medias' array hai (Multiple Qualities)
+                if (data.medias && data.medias.length > 0) {
+                    
+                    data.medias.forEach(media => {
+                        let typeBadge = media.extension === 'mp3' ? 'MP3' : 'MP4';
+                        let badgeClass = media.extension === 'mp3' ? 'mp3' : 'mp4';
+                        let qualityText = media.quality || 'HD';
+                        let sizeText = media.formattedSize ? `(${media.formattedSize})` : '';
+
+                        if(qualityText === 'no_video') return; 
+
+                        downloadListHTML += `
+                            <div class="download-item">
+                                <div class="format-badge">
+                                    <span class="badge ${badgeClass}">${typeBadge}</span>
+                                    <div>
+                                        <span class="quality-text">${qualityText}</span>
+                                        <span class="size-text">${sizeText}</span>
+                                    </div>
+                                </div>
+                                <a href="${media.url}" class="dl-btn" target="_blank">
+                                    <i class="fas fa-download"></i> <span>Download</span>
+                                </a>
+                            </div>
+                        `;
+                    });
+
+                } else if (data.url) {
+                    // Single Link Fallback
+                    downloadListHTML = `
+                        <div class="download-item">
+                            <div class="format-badge">
+                                <span class="badge mp4">MP4</span>
+                                <span class="quality-text">Standard Quality</span>
+                            </div>
+                            <a href="${data.url}" class="dl-btn" target="_blank">
+                                <i class="fas fa-download"></i> <span>Download</span>
+                            </a>
+                        </div>
+                    `;
+                    if(!data.thumbnail) thumbnail = "https://cdn-icons-png.flaticon.com/512/2991/2991108.png";
+                }
+
+                // Final Card Render
+                resultArea.innerHTML = `
+                    <div class="video-card">
+                        <div class="video-header">
+                            <img src="${thumbnail}" class="thumb-img" alt="Video Thumb" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2991/2991108.png'">
+                            <div class="video-info">
+                                <h3>${title}</h3>
+                                <p><i class="fas fa-check-circle" style="color:var(--primary)"></i> Ready to download</p>
+                            </div>
+                        </div>
+
+                        <div class="download-tabs">
+                            <span class="tab-active">Downloads Available</span>
+                        </div>
+
+                        <div class="download-list">
+                            ${downloadListHTML}
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error(error);
+                loader.style.display = 'none';
+                resultArea.innerHTML = `
+                    <div class="error-msg">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Video not found. Please check the link or try again.
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
