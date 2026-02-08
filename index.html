@@ -79,6 +79,7 @@
             outline: none;
             font-size: 16px;
         }
+        /* Button ab optional hai par design ke liye rakha hai */
         .btn-go {
             background: var(--primary);
             color: var(--white);
@@ -172,7 +173,6 @@
         .quality-text { font-weight: 500; color: var(--dark); font-size: 14px; }
         .size-text { font-size: 12px; color: var(--gray); margin-left: 5px; }
 
-        /* BUTTON STYLE CHANGED FOR CLICK ACTION */
         .dl-btn {
             background: var(--primary);
             color: white;
@@ -185,20 +185,14 @@
             align-items: center;
             gap: 5px;
             transition: 0.2s;
-            cursor: pointer; /* Pointer added */
-            border: none; /* Reset button border */
+            cursor: pointer;
+            border: none;
         }
         .dl-btn:hover { background: var(--secondary); }
 
         #loader { display: none; margin-top: 20px; color: var(--primary); font-weight: 600; }
         
-        /* New Styles for Downloading State */
-        .downloading-text {
-            color: #e67e22;
-            font-weight: bold;
-            margin-left: 5px;
-            display: none;
-        }
+        .downloading-text { color: #e67e22; font-weight: bold; margin-left: 5px; display: none; }
         
         .error-msg { 
             background: #ffeaa7; 
@@ -260,7 +254,7 @@
 
         <div class="search-container">
             <div class="input-wrapper">
-                <input type="text" id="urlInput" placeholder="Paste link here...">
+                <input type="text" id="urlInput" placeholder="Paste link here..." oninput="handlePaste()">
                 <button class="btn-go" onclick="fetchVideo()">Start <i class="fas fa-arrow-right"></i></button>
             </div>
             <div id="loader">
@@ -280,13 +274,32 @@
     <footer>&copy; 2026 VidsSave.space - All Rights Reserved.</footer>
 
     <script>
+        // --- NEW AUTO PASTE LOGIC ---
+        let debounceTimer;
+        
+        function handlePaste() {
+            // 1. Agar koi purana timer chal raha hai, use band karo
+            clearTimeout(debounceTimer);
+            
+            // 2. Naya timer shuru karo (1.5 second ka)
+            // Isse ye hoga ki user jab tak type kar raha hai, API call nahi jayegi.
+            // Jab wo rukega ya paste karke chodega, tabhi call jayegi.
+            debounceTimer = setTimeout(() => {
+                const url = document.getElementById('urlInput').value;
+                // Sirf tabhi call karo agar link 'http' se shuru ho (valid link)
+                if(url.length > 10 && url.includes("http")) {
+                    fetchVideo();
+                }
+            }, 1200); // 1200ms = 1.2 Seconds wait
+        }
+
         async function fetchVideo() {
             const urlInput = document.getElementById('urlInput');
             const resultArea = document.getElementById('result-area');
             const loader = document.getElementById('loader');
             const url = urlInput.value.trim();
 
-            if (!url) { alert("Please paste a link first!"); return; }
+            if (!url) { return; } // Empty link par kuch mat karo
 
             loader.style.display = 'block';
             resultArea.innerHTML = '';
@@ -311,12 +324,10 @@
                 
                 let downloadListHTML = '';
 
-                // HELPER FUNCTION TO GENERATE BUTTON
-                // Hum yahan 'href' ki jagah 'onclick' use kar rahe hain
+                // Helper Function
                 const createBtn = (url, type, quality) => {
-                    const cleanTitle = title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 20); // Filename clean karo
+                    const cleanTitle = title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 20);
                     const fileName = `VidsSave_${cleanTitle}.${type}`;
-                    
                     return `
                         <button class="dl-btn" onclick="forceDownload('${url}', '${fileName}', this)">
                             <i class="fas fa-download"></i> <span>Download</span>
@@ -371,39 +382,29 @@
             }
         }
 
-        // --- NEW FORCE DOWNLOAD FUNCTION ---
         async function forceDownload(url, filename, btnElement) {
-            // UI Update: Show Spinner
             const icon = btnElement.querySelector('.fa-download');
             const spinner = btnElement.querySelector('.downloading-text');
             if(icon) icon.style.display = 'none';
             if(spinner) spinner.style.display = 'inline';
 
             try {
-                // 1. Koshish karein ki Blob banakar download karein
                 const response = await fetch(url);
                 if (!response.ok) throw new Error("Network response was not ok");
-                
                 const blob = await response.blob();
                 const blobUrl = window.URL.createObjectURL(blob);
-                
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.href = blobUrl;
                 a.download = filename;
                 document.body.appendChild(a);
                 a.click();
-                
-                // Cleanup
                 window.URL.revokeObjectURL(blobUrl);
                 document.body.removeChild(a);
-
             } catch (error) {
-                // 2. Agar CORS error aaye (Security Block), to seedha link open karein
-                console.warn("Force download failed (likely CORS), opening link directly.");
+                console.warn("Force download failed, opening link directly.");
                 window.open(url, '_blank');
             } finally {
-                // Reset Button
                 if(icon) icon.style.display = 'inline-block';
                 if(spinner) spinner.style.display = 'none';
             }
