@@ -9,9 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CSS VARIABLES & RESET --- */
+        /* --- CSS STYLES (SAME AS BEFORE) --- */
         :root {
-            --primary: #00CBA9; /* VidsSave Green */
+            --primary: #00CBA9; 
             --secondary: #00a88d;
             --dark: #2d3436;
             --light: #f9fbfd;
@@ -29,7 +29,6 @@
             line-height: 1.6;
         }
 
-        /* --- NAVBAR --- */
         nav {
             background: var(--white);
             padding: 15px 5%;
@@ -50,10 +49,8 @@
             align-items: center;
             gap: 8px;
         }
-        /* BRANDING UPDATE: .space ko highlight kiya */
         .logo span { color: var(--primary); }
 
-        /* --- HERO SECTION --- */
         .hero {
             background: linear-gradient(180deg, #e3fdf8 0%, #ffffff 100%);
             padding: 60px 20px;
@@ -62,7 +59,6 @@
         .hero h1 { font-size: 2.5rem; margin-bottom: 10px; color: var(--dark); }
         .hero p { color: var(--gray); margin-bottom: 30px; font-size: 1.1rem; }
 
-        /* Input Box */
         .search-container {
             max-width: 600px;
             margin: 0 auto;
@@ -95,14 +91,12 @@
         }
         .btn-go:hover { background: var(--secondary); }
 
-        /* --- RESULT SECTION (Professional Card) --- */
         #result-area {
             max-width: 700px;
             margin: 40px auto;
             padding: 0 15px;
         }
         
-        /* Video Details Card */
         .video-card {
             background: var(--white);
             border-radius: 12px;
@@ -135,7 +129,6 @@
         }
         .video-info p { font-size: 13px; color: var(--gray); }
 
-        /* Categories (Tabs) */
         .download-tabs {
             display: flex;
             background: #f1f2f6;
@@ -147,7 +140,6 @@
         }
         .tab-active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
-        /* Download List */
         .download-list { padding: 0; }
         .download-item {
             display: flex;
@@ -174,12 +166,13 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-        .badge.mp4 { background: #00b894; } /* Green for Video */
-        .badge.mp3 { background: #0984e3; } /* Blue for Audio */
+        .badge.mp4 { background: #00b894; } 
+        .badge.mp3 { background: #0984e3; } 
         
         .quality-text { font-weight: 500; color: var(--dark); font-size: 14px; }
         .size-text { font-size: 12px; color: var(--gray); margin-left: 5px; }
 
+        /* BUTTON STYLE CHANGED FOR CLICK ACTION */
         .dl-btn {
             background: var(--primary);
             color: white;
@@ -192,11 +185,21 @@
             align-items: center;
             gap: 5px;
             transition: 0.2s;
+            cursor: pointer; /* Pointer added */
+            border: none; /* Reset button border */
         }
         .dl-btn:hover { background: var(--secondary); }
 
-        /* --- LOADER & MESSAGES --- */
         #loader { display: none; margin-top: 20px; color: var(--primary); font-weight: 600; }
+        
+        /* New Styles for Downloading State */
+        .downloading-text {
+            color: #e67e22;
+            font-weight: bold;
+            margin-left: 5px;
+            display: none;
+        }
+        
         .error-msg { 
             background: #ffeaa7; 
             color: #d35400; 
@@ -206,7 +209,6 @@
             font-size: 14px;
         }
 
-        /* --- FEATURES --- */
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -220,7 +222,6 @@
         .feat-box h4 { font-size: 16px; margin-bottom: 5px; }
         .feat-box p { font-size: 12px; color: var(--gray); }
 
-        /* Footer small */
         footer {
             text-align: center;
             padding: 20px;
@@ -235,12 +236,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Mobile Responsive */
         @media (max-width: 480px) {
             .hero h1 { font-size: 1.8rem; }
             .thumb-img { width: 80px; height: 60px; }
             .download-item { padding: 12px 15px; }
-            .dl-btn span { display: none; } /* Text hide on small mobile */
+            .dl-btn span { display: none; } 
             .dl-btn { padding: 8px 12px; }
         }
     </style>
@@ -260,10 +260,9 @@
 
         <div class="search-container">
             <div class="input-wrapper">
-                <input type="text" id="urlInput" placeholder="Paste link here (e.g., YouTube)...">
+                <input type="text" id="urlInput" placeholder="Paste link here...">
                 <button class="btn-go" onclick="fetchVideo()">Start <i class="fas fa-arrow-right"></i></button>
             </div>
-            
             <div id="loader">
                 <i class="fas fa-circle-notch fa-spin"></i> Analyzing Video...
             </div>
@@ -273,26 +272,12 @@
     <div id="result-area"></div>
 
     <section class="features">
-        <div class="feat-box">
-            <i class="fas fa-bolt"></i>
-            <h4>Fast</h4>
-            <p>Instant Download</p>
-        </div>
-        <div class="feat-box">
-            <i class="fas fa-shield-alt"></i>
-            <h4>Secure</h4>
-            <p>No Virus / Ads</p>
-        </div>
-        <div class="feat-box">
-            <i class="fas fa-check-circle"></i>
-            <h4>Free</h4>
-            <p>Unlimited Uses</p>
-        </div>
+        <div class="feat-box"><i class="fas fa-bolt"></i><h4>Fast</h4><p>Instant Download</p></div>
+        <div class="feat-box"><i class="fas fa-shield-alt"></i><h4>Secure</h4><p>No Virus / Ads</p></div>
+        <div class="feat-box"><i class="fas fa-check-circle"></i><h4>Free</h4><p>Unlimited Uses</p></div>
     </section>
 
-    <footer>
-        &copy; 2026 VidsSave.space - All Rights Reserved.
-    </footer>
+    <footer>&copy; 2026 VidsSave.space - All Rights Reserved.</footer>
 
     <script>
         async function fetchVideo() {
@@ -301,120 +286,126 @@
             const loader = document.getElementById('loader');
             const url = urlInput.value.trim();
 
-            if (!url) {
-                alert("Please paste a link first!");
-                return;
-            }
+            if (!url) { alert("Please paste a link first!"); return; }
 
-            // Reset UI
             loader.style.display = 'block';
             resultArea.innerHTML = '';
 
-            // API Details
             const apiKey = 'fa714c86ccmsh14d7483011d8231p1fae75jsnaaba55ce7db8'; 
-            const apiHost = 'social-download-all-in-one.p.rapidapi.com';
             const endpoint = 'https://social-download-all-in-one.p.rapidapi.com/v1/social/autolink';
 
             try {
                 const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: {
-                        'content-type': 'application/json',
-                        'X-RapidAPI-Key': apiKey,
-                        'X-RapidAPI-Host': apiHost
-                    },
+                    headers: { 'content-type': 'application/json', 'X-RapidAPI-Key': apiKey, 'X-RapidAPI-Host': 'social-download-all-in-one.p.rapidapi.com' },
                     body: JSON.stringify({ url: url })
                 });
 
                 const data = await response.json();
-                console.log(data); // For Debugging
-
                 loader.style.display = 'none';
 
-                if (!data || (!data.medias && !data.url)) {
-                    throw new Error("No video found");
-                }
+                if (!data || (!data.medias && !data.url)) { throw new Error("No video found"); }
 
-                // DATA EXTRACTION
-                let title = data.title || "Video Download";
+                let title = data.title || "video";
                 let thumbnail = data.thumbnail || "https://via.placeholder.com/150";
                 
-                // HTML Generate karna
                 let downloadListHTML = '';
 
-                // Agar 'medias' array hai (Multiple Qualities)
-                if (data.medias && data.medias.length > 0) {
+                // HELPER FUNCTION TO GENERATE BUTTON
+                // Hum yahan 'href' ki jagah 'onclick' use kar rahe hain
+                const createBtn = (url, type, quality) => {
+                    const cleanTitle = title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 20); // Filename clean karo
+                    const fileName = `VidsSave_${cleanTitle}.${type}`;
                     
+                    return `
+                        <button class="dl-btn" onclick="forceDownload('${url}', '${fileName}', this)">
+                            <i class="fas fa-download"></i> <span>Download</span>
+                            <span class="downloading-text"><i class="fas fa-spinner fa-spin"></i></span>
+                        </button>
+                    `;
+                };
+
+                if (data.medias && data.medias.length > 0) {
                     data.medias.forEach(media => {
-                        let typeBadge = media.extension === 'mp3' ? 'MP3' : 'MP4';
-                        let badgeClass = media.extension === 'mp3' ? 'mp3' : 'mp4';
+                        let type = media.extension || 'mp4';
+                        let badgeClass = type === 'mp3' ? 'mp3' : 'mp4';
                         let qualityText = media.quality || 'HD';
                         let sizeText = media.formattedSize ? `(${media.formattedSize})` : '';
-
-                        if(qualityText === 'no_video') return; 
+                        if(qualityText === 'no_video') return;
 
                         downloadListHTML += `
                             <div class="download-item">
                                 <div class="format-badge">
-                                    <span class="badge ${badgeClass}">${typeBadge}</span>
-                                    <div>
-                                        <span class="quality-text">${qualityText}</span>
-                                        <span class="size-text">${sizeText}</span>
-                                    </div>
+                                    <span class="badge ${badgeClass}">${type.toUpperCase()}</span>
+                                    <div><span class="quality-text">${qualityText}</span><span class="size-text">${sizeText}</span></div>
                                 </div>
-                                <a href="${media.url}" class="dl-btn" target="_blank">
-                                    <i class="fas fa-download"></i> <span>Download</span>
-                                </a>
-                            </div>
-                        `;
+                                ${createBtn(media.url, type, qualityText)}
+                            </div>`;
                     });
-
                 } else if (data.url) {
-                    // Single Link Fallback
-                    downloadListHTML = `
+                    downloadListHTML += `
                         <div class="download-item">
-                            <div class="format-badge">
-                                <span class="badge mp4">MP4</span>
-                                <span class="quality-text">Standard Quality</span>
-                            </div>
-                            <a href="${data.url}" class="dl-btn" target="_blank">
-                                <i class="fas fa-download"></i> <span>Download</span>
-                            </a>
-                        </div>
-                    `;
+                            <div class="format-badge"><span class="badge mp4">MP4</span><span class="quality-text">Standard</span></div>
+                            ${createBtn(data.url, 'mp4', 'SD')}
+                        </div>`;
                     if(!data.thumbnail) thumbnail = "https://cdn-icons-png.flaticon.com/512/2991/2991108.png";
                 }
 
-                // Final Card Render
                 resultArea.innerHTML = `
                     <div class="video-card">
                         <div class="video-header">
-                            <img src="${thumbnail}" class="thumb-img" alt="Video Thumb" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2991/2991108.png'">
-                            <div class="video-info">
-                                <h3>${title}</h3>
-                                <p><i class="fas fa-check-circle" style="color:var(--primary)"></i> Ready to download</p>
-                            </div>
+                            <img src="${thumbnail}" class="thumb-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2991/2991108.png'">
+                            <div class="video-info"><h3>${title}</h3><p>Ready to download</p></div>
                         </div>
-
-                        <div class="download-tabs">
-                            <span class="tab-active">Downloads Available</span>
-                        </div>
-
-                        <div class="download-list">
-                            ${downloadListHTML}
+                        <div class="download-tabs"><span class="tab-active">Downloads Available</span></div>
+                        <div class="download-list">${downloadListHTML}</div>
+                        <div style="padding:10px; font-size:11px; color:#888; text-align:center; background:#f9f9f9;">
+                            If video opens in new tab: Click the 3 dots (⋮) on video player & select "Download".
                         </div>
                     </div>
                 `;
 
             } catch (error) {
-                console.error(error);
                 loader.style.display = 'none';
-                resultArea.innerHTML = `
-                    <div class="error-msg">
-                        <i class="fas fa-exclamation-triangle"></i> 
-                        Video not found. Please check the link or try again.
-                    </div>
-                `;
+                resultArea.innerHTML = `<div class="error-msg">Video not found. Please check link.</div>`;
+            }
+        }
+
+        // --- NEW FORCE DOWNLOAD FUNCTION ---
+        async function forceDownload(url, filename, btnElement) {
+            // UI Update: Show Spinner
+            const icon = btnElement.querySelector('.fa-download');
+            const spinner = btnElement.querySelector('.downloading-text');
+            if(icon) icon.style.display = 'none';
+            if(spinner) spinner.style.display = 'inline';
+
+            try {
+                // 1. Koshish karein ki Blob banakar download karein
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Network response was not ok");
+                
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = blobUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Cleanup
+                window.URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+
+            } catch (error) {
+                // 2. Agar CORS error aaye (Security Block), to seedha link open karein
+                console.warn("Force download failed (likely CORS), opening link directly.");
+                window.open(url, '_blank');
+            } finally {
+                // Reset Button
+                if(icon) icon.style.display = 'inline-block';
+                if(spinner) spinner.style.display = 'none';
             }
         }
     </script>
