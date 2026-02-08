@@ -10,37 +10,52 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CSS STYLES (SAME AS BEFORE) --- */
-        :root { --primary: #00CBA9; --dark: #333; --bg: #f4f6f8; --white: #fff; --mp3-bg: #f1c40f; --mp4-bg: #e67e22; --border: #e1e1e1; }
+        /* --- CSS STYLES --- */
+        :root { --primary: #00CBA9; --dark: #333; --bg: #f4f6f8; --white: #fff; --mp3-bg: #f1c40f; --mp4-bg: #e67e22; --border: #e1e1e1; --red: #e74c3c; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--dark); padding-bottom: 50px; }
+        
         nav { background: var(--white); padding: 15px 5%; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 24px; font-weight: 800; color: var(--dark); text-decoration: none; }
         .logo span { color: var(--primary); }
+        
         .hero { background: var(--white); padding: 30px 20px; text-align: center; border-bottom: 1px solid #ddd; }
         .search-box { max-width: 600px; margin: 15px auto; display: flex; border: 2px solid var(--primary); border-radius: 50px; overflow: hidden; background: #fff; }
         input { flex: 1; padding: 15px; border: none; outline: none; font-size: 16px; }
         .btn-go { background: var(--primary); color: white; border: none; padding: 0 25px; font-size: 18px; cursor: pointer; }
         #loader { display: none; margin-top: 15px; color: var(--primary); font-weight: bold; }
+        
         #result-area { max-width: 700px; margin: 20px auto; padding: 0 15px; }
         .result-card { background: var(--white); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
+        
         .card-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); background: #fff; }
         .thumb-img { width: 100%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .video-title { margin-top: 15px; font-size: 16px; font-weight: 700; line-height: 1.4; color: #2c3e50; }
         .video-meta { margin-top: 5px; font-size: 13px; color: #7f8c8d; }
+        
         .category-header { background: #f8f9fa; padding: 10px 20px; font-weight: 700; font-size: 15px; color: #555; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); border-top: 1px solid var(--border); }
         .category-header i { color: var(--primary); }
         .category-header:first-child { border-top: none; }
+        
         .dl-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f1f1f1; }
         .dl-item:last-child { border-bottom: none; }
         .dl-info { display: flex; align-items: center; gap: 12px; }
+        
         .badge { padding: 4px 8px; border-radius: 4px; color: white; font-weight: 700; font-size: 12px; text-transform: uppercase; min-width: 50px; text-align: center; }
         .badge-mp3 { background: var(--mp3-bg); }
         .badge-mp4 { background: var(--mp4-bg); }
+        
         .quality-text { font-weight: 600; font-size: 14px; color: #333; }
         .size-text { font-size: 13px; color: #999; font-weight: 400; }
-        .dl-btn { text-decoration: none; border: 2px solid var(--primary); color: var(--primary); background: transparent; padding: 6px 18px; border-radius: 6px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; }
+        
+        /* BUTTON STYLES */
+        .dl-btn { text-decoration: none; border: 2px solid var(--primary); color: var(--primary); background: transparent; padding: 6px 15px; border-radius: 6px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .dl-btn:hover { background: var(--primary); color: white; }
+        
+        /* Error/Backup Button Style */
+        .dl-btn.server-2 { border-color: var(--mp4-bg); color: var(--mp4-bg); }
+        .dl-btn.server-2:hover { background: var(--mp4-bg); color: white; }
+
         .error-msg { background: #fff3cd; color: #856404; padding: 15px; text-align: center; border-radius: 8px; margin-top: 20px; }
     </style>
 </head>
@@ -101,6 +116,17 @@
                 const thumbnail = data.thumbnail || "https://via.placeholder.com/400x250?text=Video+Preview";
                 const duration = data.duration ? `Duration: ${data.duration}` : '';
 
+                // SORTING
+                const getQualityWeight = (q) => {
+                    if(!q) return 0;
+                    q = q.toLowerCase();
+                    if(q.includes('4k')) return 100;
+                    if(q.includes('1080')) return 80;
+                    if(q.includes('720')) return 70;
+                    if(q.includes('480')) return 60;
+                    return 10;
+                };
+
                 let audioItems = [];
                 let videoItems = [];
 
@@ -119,15 +145,19 @@
                             if(qual !== 'no_video') videoItems.push(item);
                         }
                     });
+                    videoItems.sort((a, b) => getQualityWeight(b.quality) - getQualityWeight(a.quality));
                 } else if (data.url) {
                     videoItems.push({ url: data.url, ext: 'mp4', cleanQuality: 'Standard', formattedSize: '' });
                 }
 
-                // --- NEW CLICK HANDLER ---
+                // --- SMART DOWNLOAD BUTTON GENERATOR ---
                 const createRow = (item, isAudio) => {
                     const badgeClass = isAudio ? 'badge-mp3' : 'badge-mp4';
                     const label = isAudio ? 'MP3' : 'MP4';
                     const size = item.formattedSize || '';
+                    
+                    // Button ID for unique identification
+                    const btnId = `btn-${Math.random().toString(36).substr(2, 9)}`;
                     
                     return `
                     <div class="dl-item">
@@ -138,7 +168,7 @@
                                 <div class="size-text">${size}</div>
                             </div>
                         </div>
-                        <button class="dl-btn" onclick="openLink('${item.url}')">
+                        <button id="${btnId}" class="dl-btn" onclick="attemptDownload('${item.url}', '${btnId}')">
                             <i class="fas fa-download"></i> Download
                         </button>
                     </div>`;
@@ -161,25 +191,51 @@
 
             } catch (error) {
                 loader.style.display = 'none';
-                resultArea.innerHTML = `<div class="error-msg">Video not found or Private link.</div>`;
+                resultArea.innerHTML = `<div class="error-msg">❌ Link expired or private. Please try another one.</div>`;
             }
         }
 
-        // --- NEW OPEN LINK FUNCTION (NO-REFERRER) ---
-        function openLink(url) {
-            // Check if it's YouTube (Google Video)
-            if(url.includes("googlevideo.com")) {
-                // Method 1: Create hidden link with noreferrer
+        // --- INTELLIGENT DOWNLOAD HANDLER ---
+        async function attemptDownload(url, btnId) {
+            const btn = document.getElementById(btnId);
+            const originalText = btn.innerHTML;
+            
+            // 1. YouTube/Google Links = Direct Open (Server 2 Mode)
+            if (url.includes("googlevideo.com") || url.includes("youtube")) {
+                window.open(url, '_blank', 'noreferrer');
+                btn.innerHTML = "<i class='fas fa-check'></i> Opening...";
+                setTimeout(() => btn.innerHTML = originalText, 3000);
+                return;
+            }
+
+            // 2. Other Links (Insta/TikTok) = Try Force Download first
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Saving...";
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Network Blocked");
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url;
-                a.target = '_blank';
-                a.rel = 'noreferrer noopener'; // Hide source to bypass some checks
+                a.href = blobUrl;
+                a.download = "VidsSave_Video.mp4";
                 document.body.appendChild(a);
                 a.click();
-                document.body.removeChild(a);
-            } else {
-                // Method 2: Force Download for TikTok/Insta
-                window.location.href = url;
+                window.URL.revokeObjectURL(blobUrl);
+                btn.innerHTML = "<i class='fas fa-check'></i> Saved!";
+                setTimeout(() => btn.innerHTML = originalText, 3000);
+            
+            } catch (error) {
+                // 3. IF FAIL -> SWITCH TO SERVER 2 MODE
+                console.warn("Direct download failed, switching to backup.");
+                
+                btn.classList.add('server-2'); // Change Color
+                btn.innerHTML = "<i class='fas fa-external-link-alt'></i> Try Server 2";
+                
+                // Change onclick to direct open
+                btn.onclick = function() {
+                    window.open(url, '_blank', 'noreferrer');
+                };
             }
         }
     </script>
