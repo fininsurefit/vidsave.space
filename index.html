@@ -3,187 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VidsSave.space - HD Video & Audio Downloader</title>
+    <title>VidsSave.space - HD Video Downloader</title>
+    <meta name="referrer" content="no-referrer">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- VARIABLES --- */
-        :root {
-            --primary: #00CBA9; /* Green Theme */
-            --dark: #333;
-            --bg: #f4f6f8;
-            --white: #fff;
-            --mp3-bg: #f1c40f; /* Yellow for Audio */
-            --mp4-bg: #e67e22; /* Orange for Video */
-            --border: #e1e1e1;
-        }
-
+        /* --- SAME STYLING AS BEFORE --- */
+        :root { --primary: #00CBA9; --dark: #333; --bg: #f4f6f8; --white: #fff; --mp3-bg: #f1c40f; --mp4-bg: #e67e22; --border: #e1e1e1; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--dark); padding-bottom: 50px; }
-
-        /* --- NAVBAR --- */
-        nav {
-            background: var(--white);
-            padding: 15px 5%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            text-align: center;
-            position: sticky; top: 0; z-index: 100;
-        }
+        nav { background: var(--white); padding: 15px 5%; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 24px; font-weight: 800; color: var(--dark); text-decoration: none; }
         .logo span { color: var(--primary); }
-
-        /* --- HERO & INPUT --- */
-        .hero {
-            background: var(--white);
-            padding: 30px 20px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        .search-box {
-            max-width: 600px;
-            margin: 15px auto;
-            position: relative;
-            display: flex;
-            border: 2px solid var(--primary);
-            border-radius: 50px;
-            overflow: hidden;
-            background: #fff;
-        }
-        input {
-            flex: 1; padding: 15px; border: none; outline: none; font-size: 16px;
-        }
-        .btn-go {
-            background: var(--primary); color: white; border: none; padding: 0 25px;
-            font-size: 18px; cursor: pointer;
-        }
+        .hero { background: var(--white); padding: 30px 20px; text-align: center; border-bottom: 1px solid #ddd; }
+        .search-box { max-width: 600px; margin: 15px auto; display: flex; border: 2px solid var(--primary); border-radius: 50px; overflow: hidden; background: #fff; }
+        input { flex: 1; padding: 15px; border: none; outline: none; font-size: 16px; }
+        .btn-go { background: var(--primary); color: white; border: none; padding: 0 25px; font-size: 18px; cursor: pointer; }
         #loader { display: none; margin-top: 15px; color: var(--primary); font-weight: bold; }
-
-        /* --- RESULT CARD DESIGN --- */
-        #result-area {
-            max-width: 700px;
-            margin: 20px auto;
-            padding: 0 15px;
-        }
-
-        .result-card {
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        /* 1. TOP THUMBNAIL AREA */
-        .card-header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
-            background: #fff;
-        }
-        .thumb-img {
-            width: 100%;
-            max-width: 400px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .video-title {
-            margin-top: 15px;
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.4;
-            color: #2c3e50;
-        }
-        .video-meta {
-            margin-top: 5px;
-            font-size: 13px;
-            color: #7f8c8d;
-        }
-
-        /* 2. CATEGORY HEADERS (Music/Video) */
-        .category-header {
-            background: #f8f9fa;
-            padding: 10px 20px;
-            font-weight: 700;
-            font-size: 15px;
-            color: #555;
-            display: flex; align-items: center; gap: 8px;
-            border-bottom: 1px solid var(--border);
-            border-top: 1px solid var(--border);
-        }
+        #result-area { max-width: 700px; margin: 20px auto; padding: 0 15px; }
+        .result-card { background: var(--white); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
+        .card-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); background: #fff; }
+        .thumb-img { width: 100%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .video-title { margin-top: 15px; font-size: 16px; font-weight: 700; line-height: 1.4; color: #2c3e50; }
+        .video-meta { margin-top: 5px; font-size: 13px; color: #7f8c8d; }
+        .category-header { background: #f8f9fa; padding: 10px 20px; font-weight: 700; font-size: 15px; color: #555; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); border-top: 1px solid var(--border); }
         .category-header i { color: var(--primary); }
         .category-header:first-child { border-top: none; }
-
-        /* 3. DOWNLOAD LIST ITEM */
-        .dl-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #f1f1f1;
-            transition: background 0.2s;
-        }
-        .dl-item:hover { background: #fafafa; }
+        .dl-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f1f1f1; }
         .dl-item:last-child { border-bottom: none; }
-
-        /* Left Side: Quality Badge & Size */
         .dl-info { display: flex; align-items: center; gap: 12px; }
-        
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: white;
-            font-weight: 700;
-            font-size: 12px;
-            text-transform: uppercase;
-            min-width: 50px;
-            text-align: center;
-        }
-        .badge-mp3 { background: var(--mp3-bg); } /* Yellow */
-        .badge-mp4 { background: var(--mp4-bg); } /* Orange */
-
-        .quality-text {
-            font-weight: 600;
-            font-size: 14px;
-            color: #333;
-        }
-        .size-text {
-            font-size: 13px;
-            color: #999;
-            font-weight: 400;
-        }
-
-        /* Right Side: Button */
-        .dl-btn {
-            text-decoration: none;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            background: transparent;
-            padding: 6px 18px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 13px;
-            display: flex; align-items: center; gap: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .dl-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .downloading { opacity: 0.7; pointer-events: none; }
-        .downloading i.fa-download { display: none; }
-        .downloading i.fa-spinner { display: inline-block; }
-
+        .badge { padding: 4px 8px; border-radius: 4px; color: white; font-weight: 700; font-size: 12px; text-transform: uppercase; min-width: 50px; text-align: center; }
+        .badge-mp3 { background: var(--mp3-bg); }
+        .badge-mp4 { background: var(--mp4-bg); }
+        .quality-text { font-weight: 600; font-size: 14px; color: #333; }
+        .size-text { font-size: 13px; color: #999; font-weight: 400; }
+        .dl-btn { text-decoration: none; border: 2px solid var(--primary); color: var(--primary); background: transparent; padding: 6px 18px; border-radius: 6px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; }
+        .dl-btn:hover { background: var(--primary); color: white; }
         .error-msg { background: #fff3cd; color: #856404; padding: 15px; text-align: center; border-radius: 8px; margin-top: 20px; }
-
-        @media (max-width: 480px) {
-            .dl-item { padding: 12px 15px; }
-            .badge { font-size: 11px; padding: 3px 6px; }
-            .quality-text { font-size: 13px; }
-        }
     </style>
 </head>
 <body>
@@ -205,7 +63,6 @@
 
     <script>
         let debounceTimer;
-        
         function handlePaste() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
@@ -244,23 +101,18 @@
                 const thumbnail = data.thumbnail || "https://via.placeholder.com/400x250?text=Video+Preview";
                 const duration = data.duration ? `Duration: ${data.duration}` : '';
 
-                // --- SORTING LOGIC (High to Low) ---
-                // Helper to give weight to quality for sorting
+                // SORTING LOGIC
                 const getQualityWeight = (q) => {
                     if(!q) return 0;
                     q = q.toLowerCase();
                     if(q.includes('4k')) return 100;
-                    if(q.includes('2k') || q.includes('1440')) return 90;
                     if(q.includes('1080')) return 80;
                     if(q.includes('720')) return 70;
                     if(q.includes('480')) return 60;
                     if(q.includes('360')) return 50;
-                    if(q.includes('240')) return 40;
-                    if(q.includes('144')) return 30;
                     return 10;
                 };
 
-                // Prepare Lists
                 let audioItems = [];
                 let videoItems = [];
 
@@ -268,10 +120,8 @@
                     data.medias.forEach(media => {
                         let ext = media.extension || 'mp4';
                         let qual = media.quality || 'HD';
-                        
-                        // Clean Quality Label (Make it look like 720P, 128KBPS)
                         if(qual === 'render_1080p') qual = '1080P';
-                        if(!isNaN(qual)) qual = qual + 'P'; // If just number, add P
+                        if(!isNaN(qual)) qual = qual + 'P';
                         
                         let item = { ...media, cleanQuality: qual.toUpperCase(), ext: ext };
 
@@ -281,23 +131,21 @@
                             if(qual !== 'no_video') videoItems.push(item);
                         }
                     });
-
-                    // SORT VIDEO: High Resolution First
                     videoItems.sort((a, b) => getQualityWeight(b.quality) - getQualityWeight(a.quality));
                 } else if (data.url) {
                     videoItems.push({ url: data.url, ext: 'mp4', cleanQuality: 'Standard', formattedSize: '' });
                 }
 
-                // --- GENERATE HTML ---
+                // --- SMART DOWNLOAD BUTTON ---
                 const createRow = (item, isAudio) => {
                     const badgeClass = isAudio ? 'badge-mp3' : 'badge-mp4';
                     const label = isAudio ? 'MP3' : 'MP4';
                     const size = item.formattedSize || '';
                     
-                    // Clean Title for Filename
-                    const safeTitle = title.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 25);
-                    const filename = `VidsSave_${safeTitle}.${item.ext}`;
-
+                    // AGAR GOOGLE VIDEO HAI TO DIRECT LINK OPEN KAREIN (Avoid 403)
+                    // AGAR INSTA/TIKTOK HAI TO FORCE DOWNLOAD KAREIN
+                    let action = `smartDownload('${item.url}', this)`;
+                    
                     return `
                     <div class="dl-item">
                         <div class="dl-info">
@@ -307,9 +155,8 @@
                                 <div class="size-text">${size}</div>
                             </div>
                         </div>
-                        <button class="dl-btn" onclick="forceDownload('${item.url}', '${filename}', this)">
+                        <button class="dl-btn" onclick="${action}">
                             <i class="fas fa-download"></i> Download
-                            <i class="fas fa-spinner fa-spin" style="display:none;"></i>
                         </button>
                     </div>`;
                 };
@@ -317,7 +164,6 @@
                 let audioHTML = audioItems.map(item => createRow(item, true)).join('');
                 let videoHTML = videoItems.map(item => createRow(item, false)).join('');
 
-                // --- FINAL RENDER ---
                 resultArea.innerHTML = `
                     <div class="result-card">
                         <div class="card-header">
@@ -325,22 +171,8 @@
                             <div class="video-title">${title}</div>
                             <div class="video-meta">${duration}</div>
                         </div>
-
-                        ${audioHTML ? `
-                            <div class="category-header">
-                                <i class="fas fa-music"></i> Music
-                            </div>
-                            <div class="dl-list">${audioHTML}</div>
-                        ` : ''}
-
-                        ${videoHTML ? `
-                            <div class="category-header">
-                                <i class="fas fa-video"></i> Video
-                            </div>
-                            <div class="dl-list">${videoHTML}</div>
-                        ` : ''}
-
-                        ${!audioHTML && !videoHTML ? '<div style="padding:20px;text-align:center;">No direct links found.</div>' : ''}
+                        ${audioHTML ? `<div class="category-header"><i class="fas fa-music"></i> Music</div><div>${audioHTML}</div>` : ''}
+                        ${videoHTML ? `<div class="category-header"><i class="fas fa-video"></i> Video</div><div>${videoHTML}</div>` : ''}
                     </div>
                 `;
 
@@ -350,32 +182,47 @@
             }
         }
 
-        async function forceDownload(url, filename, btn) {
-            btn.classList.add('downloading');
-            const icon = btn.querySelector('.fa-download');
-            const spinner = btn.querySelector('.fa-spinner');
-            if(icon) icon.style.display = 'none';
-            if(spinner) spinner.style.display = 'inline-block';
+        // --- NEW SMART DOWNLOAD LOGIC ---
+        function smartDownload(url, btn) {
+            // Check if it's a Google/YouTube link
+            if (url.includes("googlevideo.com") || url.includes("youtube")) {
+                // Google links ko New Tab me open karo (Direct Download often fails due to IP lock)
+                // Hum 'noreferrer' use kar rahe hain taaki Google ko pata na chale request kahan se aayi
+                window.open(url, '_blank', 'noreferrer');
+                
+                // User ko batao
+                btn.innerHTML = "<i class='fas fa-check'></i> Opening...";
+                setTimeout(() => btn.innerHTML = "<i class='fas fa-download'></i> Download", 2000);
+            } else {
+                // TikTok/Insta ke liye Direct Download (Blob method)
+                forceDownload(url, btn);
+            }
+        }
 
+        async function forceDownload(url, btn) {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Saving...";
+            
             try {
                 const response = await fetch(url);
-                if (!response.ok) throw new Error("Net Error");
+                if (!response.ok) throw new Error("Network response was not ok");
                 const blob = await response.blob();
                 const blobUrl = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = blobUrl;
-                a.download = filename;
+                a.download = "VidsSave_Video.mp4";
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(blobUrl);
-                document.body.removeChild(a);
-            } catch (e) {
+                a.remove();
+                btn.innerHTML = "<i class='fas fa-check'></i> Saved!";
+            } catch (error) {
+                // Fallback: Agar fail ho jaye to new tab me kholo
                 window.open(url, '_blank');
-            } finally {
-                btn.classList.remove('downloading');
-                if(icon) icon.style.display = 'inline-block';
-                if(spinner) spinner.style.display = 'none';
+                btn.innerHTML = "<i class='fas fa-external-link-alt'></i> Opened";
             }
+            
+            setTimeout(() => btn.innerHTML = originalText, 3000);
         }
     </script>
 </body>
